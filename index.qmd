@@ -1,0 +1,101 @@
+---
+execute:
+ echo: false
+ message: false
+ warning: false
+ 
+---
+
+<!-- median income by census tract in Massachusetts 
+i am interested in median income by cencus tract in MA. Give me some concise code in R and tidyvencus to download the data. 
+-->
+
+
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+#| include: false
+library(tidyverse)
+library(tidycensus)
+library(sf)
+library(viridis)
+library(tigris)
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+options(tidycensus.progress_bar = FALSE)
+```
+
+
+
+```{r}
+options(tidycensus.progress_bar = FALSE)
+options(tigris_use_cache = TRUE)
+#options(tigris_class = "sf")
+# Download median household income (may use default key silently)
+# B19013_001 = Median household income
+# geometry = TRUE returns spatial polygons for mapping
+ca_income <- get_acs(
+  geography = "tract",
+  state = "CA",
+  variables = "B19013_001",
+  year = 2022,
+  geometry = TRUE
+)
+
+# Download county shapes for CA (no geometry simplification)
+ca_counties <- counties(state = "CA", cb = TRUE, class = "sf")
+```
+
+
+```{r}
+# California sunset-inspired colors
+california_colors <- c(
+  "#FF6F61",  # Coral
+  "#FFB347",  # Sunset orange
+  "#FFD700",  # Golden yellow
+  "#87CEEB",  # Sky blue
+  "#4682B4"   # Pacific blue
+)
+california_nature <- c(
+  "#2E8B57",  # Sequoia green
+  "#8FBC8F",  # Sage
+  "#DEB887",  # Sand
+  "#A0522D",  # Sierra soil
+  "#87CEFA"   # Coastal sky
+)
+
+library(tigris)
+library(sf)
+library(ggplot2)
+
+# County shapes
+ca_counties <- counties(state = "CA", cb = TRUE, class = "sf")
+
+# Centroids for labels
+ca_centroids <- st_centroid(ca_counties)
+ca_centroids$county_name <- ca_centroids$NAME
+
+ggplot(ca_income, aes(fill = estimate)) +
+  geom_sf(color = NA) +  # Tract polygons
+  geom_sf(data = ca_counties, fill = NA, color = "white", linewidth = 0.3) +  # County borders
+  geom_sf_text(data = ca_centroids, aes(label = county_name), inherit.aes = FALSE,
+               size = 2.5, color = "black") +  # County labels
+  scale_fill_gradientn(
+    colors = california_nature,
+    name = "Median Income",
+    na.value = "gray90"
+  ) +
+  labs(
+    title = "California Median Household Income by Census Tract",
+    caption = "Source: ACS 2022 via tidycensus"
+  ) +
+  theme_void(base_size = 13) +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(face = "bold", hjust = 0.5)
+  )
+
+```
+
+This map uses California nature-inspired colors to depict median household income by census tract for the state in 2022, based on American Community Survey (ACS) data. The earthy palette—featuring greens, browns, and blues—evokes the state's diverse landscapes while visually distinguishing income levels. Higher-income tracts appear in lighter, more vibrant tones, while lower-income areas are shown in deeper hues. County boundaries and labels provide geographic orientation, making it easy to spot regional contrasts such as the wealthier coastal corridors versus inland and rural areas. The result is a visually engaging and informative view of economic geography across California.
