@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Median Income",
+    "section": "",
+    "text": "This map uses California nature-inspired colors to depict median household income by census tract for the state in 2022, based on American Community Survey (ACS) data. The earthy palette—featuring greens, browns, and blues—evokes the state’s diverse landscapes while visually distinguishing income levels. Higher-income tracts appear in lighter, more vibrant tones, while lower-income areas are shown in deeper hues. County boundaries and labels provide geographic orientation, making it easy to spot regional contrasts such as the wealthier coastal corridors versus inland and rural areas. The result is a visually engaging and informative view of economic geography across California."
+  }
+]
